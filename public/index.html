@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nmap Online Scanner</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Nmap Online</h1>
+            <p>Network exploration and security auditing</p>
+        </header>
+
+        <main>
+            <div class="input-group">
+                <input type="text" id="targetInput" placeholder="Target (e.g., scanme.nmap.org)" autocomplete="off">
+                <input type="text" id="portsInput" placeholder="Ports (e.g., 80,443 or 1-1000)" autocomplete="off"
+                    style="width: 30%;">
+                <button id="scanBtn">
+                    <span class="btn-text">Start Scan</span>
+                    <div class="loader"></div>
+                </button>
+            </div>
+
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                    <span class="terminal-title">bash — nmap</span>
+                </div>
+                <div class="terminal-body">
+                    <pre id="output">Waiting for input...</pre>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>For educational purposes only. Do not scan unauthorized targets.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
