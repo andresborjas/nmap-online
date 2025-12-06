@@ -23,12 +23,29 @@
         <main>
             <div class="input-group">
                 <input type="text" id="targetInput" placeholder="Target (e.g., scanme.nmap.org)" autocomplete="off">
-                <input type="text" id="portsInput" placeholder="Ports (e.g., 80,443 or 1-1000)" autocomplete="off"
-                    style="width: 30%;">
+                <input type="text" id="portsInput" placeholder="Ports (e.g., 80,443)" autocomplete="off"
+                    style="width: 20%;">
                 <button id="scanBtn">
                     <span class="btn-text">Start Scan</span>
                     <div class="loader"></div>
                 </button>
+            </div>
+
+            <div class="advanced-options">
+                <details>
+                    <summary>Advanced Options</summary>
+                    <div class="options-grid">
+                        <label><input type="checkbox" value="-sV" class="nmap-flag"> Service Version (-sV)</label>
+                        <label><input type="checkbox" value="-O" class="nmap-flag"> OS Detection (-O)</label>
+                        <label><input type="checkbox" value="-A" class="nmap-flag"> Aggressive Scan (-A)</label>
+                        <label><input type="checkbox" value="-Pn" class="nmap-flag"> No Ping (-Pn)</label>
+                        <label><input type="checkbox" value="-6" class="nmap-flag"> IPv6 (-6)</label>
+                    </div>
+                    <div class="custom-args">
+                        <input type="text" id="customArgsInput" placeholder="Custom arguments (e.g., --script=vuln)"
+                            autocomplete="off">
+                    </div>
+                </details>
             </div>
 
             <div class="terminal-window">

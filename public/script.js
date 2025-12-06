@@ -12,6 +12,11 @@ targetInput.addEventListener('keypress', (e) => {
 async function startScan() {
     const target = targetInput.value.trim();
     const ports = document.getElementById('portsInput').value.trim();
+    const customArgs = document.getElementById('customArgsInput').value.trim();
+
+    // Collect checked flags
+    const flags = Array.from(document.querySelectorAll('.nmap-flag:checked'))
+        .map(cb => cb.value);
 
     if (!target) {
         output.textContent = 'Please enter a target.';
@@ -26,6 +31,8 @@ async function startScan() {
     try {
         const body = { target };
         if (ports) body.ports = ports;
+        if (flags.length > 0) body.flags = flags;
+        if (customArgs) body.customArgs = customArgs;
 
         const response = await fetch('/api/scan', {
             method: 'POST',
@@ -38,16 +45,21 @@ async function startScan() {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || 'Scan failed');
+            // If we have a JSON error response, use it
+            if (data.error) {
+                let errorMessage = data.error;
+                if (data.details) {
+                    errorMessage += `\n\n${data.details}`;
+                }
+                throw new Error(errorMessage);
+            }
+            throw new Error('Scan failed');
         }
 
         output.textContent = data.output;
         output.style.color = '#10b981';
     } catch (error) {
         output.textContent = `Error: ${error.message}`;
-        if (error.message.includes('Scan failed')) {
-            output.textContent += '\n\nMake sure nmap is installed on the server.';
-        }
         output.style.color = '#ef4444';
     } finally {
         setLoading(false);

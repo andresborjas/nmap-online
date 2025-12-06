@@ -1,0 +1,24 @@
+Server running at http://localhost:3000
+Scanning target: 127.0.0.1 with args: -O 127.0.0.1
+Error executing nmap: Command failed: nmap -O 127.0.0.1
+TCP/IP fingerprinting (for OS scan) requires root privileges.
+QUITTING!
+
+Scanning target: facebook.com with args: -O facebook.com
+Error executing nmap: Command failed: nmap -O facebook.com
+TCP/IP fingerprinting (for OS scan) requires root privileges.
+QUITTING!
+
+Scanning target: facebook.com with args: -O facebook.com
+Error executing nmap: Command failed: nmap -O facebook.com
+TCP/IP fingerprinting (for OS scan) requires root privileges.
+QUITTING!
+
+Scanning target: facebook.com with args: -sV -Pn facebook.com
+Scanning target: facebook.com with args: -sV -O -Pn facebook.com
+Error executing nmap: Command failed: nmap -sV -O -Pn facebook.com
+TCP/IP fingerprinting (for OS scan) requires root privileges.
+QUITTING!
+
+Scanning target: facebook.com with args: -sV -Pn -V facebook.com
+Scanning target: facebook.com with args: -sV -Pn -v facebook.com

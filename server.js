@@ -11,7 +11,7 @@ app.use(express.static('public'));
 app.use(express.json());
 
 app.post('/api/scan', (req, res) => {
-    const { target, ports } = req.body;
+    const { target, ports, flags, customArgs } = req.body;
 
     if (!target) {
         return res.status(400).json({ error: 'Target is required' });
@@ -25,32 +25,66 @@ app.post('/api/scan', (req, res) => {
         return res.status(400).json({ error: 'Invalid target format' });
     }
 
-    const nmapArgs = ['-F', target];
+    const nmapArgs = [];
 
+    // Add flags
+    const allowedFlags = ['-sV', '-O', '-A', '-Pn', '-6'];
+    if (flags && Array.isArray(flags)) {
+        flags.forEach(flag => {
+            if (allowedFlags.includes(flag)) {
+                nmapArgs.push(flag);
+            }
+        });
+    }
+
+    // Add ports
     if (ports) {
         // Validate ports: numbers, commas, hyphens only
         const isValidPorts = /^[0-9,-]+$/.test(ports);
         if (!isValidPorts) {
             return res.status(400).json({ error: 'Invalid ports format. Use numbers, commas, and hyphens (e.g., 80,443 or 1-1000)' });
         }
-        // Replace -F (Fast mode) with specific ports if provided, or just append?
-        // Usually -p overrides default scan. Let's remove -F if specific ports are given to be precise, 
-        // or just add -p. Nmap allows both but -p is more specific.
-        // Let's use -p and remove -F to avoid confusion, or keep -F as default if no ports.
-
-        // Actually, let's just add -p. If -p is present, it scans those ports.
-        // But wait, I defined nmapArgs with -F initially.
-        // Let's reconstruct args.
-        nmapArgs.length = 0; // Clear array
-        nmapArgs.push('-p', ports, target);
+        nmapArgs.push('-p', ports);
+    } else {
+        // Default to fast scan if no ports specified, unless other flags present?
+        // Let's keep it simple: if no ports, nmap scans top 1000 by default.
+        // If we want fast scan as default:
+        if (!flags && !customArgs) nmapArgs.push('-F');
     }
 
-    console.log(`Scanning target: ${target} with ports: ${ports || 'default (-F)'}`);
+    // Add custom args
+    if (customArgs) {
+        // Basic validation: allow alphanumeric, dashes, equals, spaces (but split by space)
+        // We need to be careful here. execFile takes an array of arguments.
+        // We should split customArgs by space, but respect quotes if possible?
+        // For simplicity, let's split by space and validate each part.
+        // Also disallow shell metacharacters just in case.
+        if (/[;&|`]/.test(customArgs)) {
+            return res.status(400).json({ error: 'Invalid characters in custom arguments' });
+        }
+
+        const args = customArgs.split(/\s+/).filter(arg => arg.length > 0);
+        nmapArgs.push(...args);
+    }
+
+    nmapArgs.push(target);
+
+    console.log(`Scanning target: ${target} with args: ${nmapArgs.join(' ')}`);
 
     // Execute nmap
     execFile('nmap', nmapArgs, (error, stdout, stderr) => {
         if (error) {
             console.error(`Error executing nmap: ${error.message}`);
+
+            // Check for root privilege error
+            if (stderr && stderr.includes('requires root privileges')) {
+                return res.status(403).json({
+                    error: 'Root privileges required',
+                    details: 'This scan type (e.g., OS detection, -sS) requires root privileges. Please run the server with sudo.'
+                });
+            }
+
+            // If nmap is not found, it will error here.
             return res.status(500).json({ error: 'Scan failed', details: stderr || error.message });
         }
 
