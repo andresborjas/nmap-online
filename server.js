@@ -28,7 +28,7 @@ app.post('/api/scan', (req, res) => {
     const nmapArgs = [];
 
     // Add flags
-    const allowedFlags = ['-sV', '-O', '-A', '-Pn', '-6'];
+    const allowedFlags = ['-sV', '-O', '-A', '-Pn'];
     if (flags && Array.isArray(flags)) {
         flags.forEach(flag => {
             if (allowedFlags.includes(flag)) {
@@ -88,7 +88,8 @@ app.post('/api/scan', (req, res) => {
             return res.status(500).json({ error: 'Scan failed', details: stderr || error.message });
         }
 
-        res.json({ output: stdout });
+        const fullCommand = `nmap ${nmapArgs.join(' ')}`;
+        res.json({ output: stdout, command: fullCommand });
     });
 });
 

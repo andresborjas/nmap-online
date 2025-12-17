@@ -56,7 +56,7 @@ async function startScan() {
             throw new Error('Scan failed');
         }
 
-        output.textContent = data.output;
+        output.textContent = `$ ${data.command}\n\n${data.output}`;
         output.style.color = '#10b981';
     } catch (error) {
         output.textContent = `Error: ${error.message}`;

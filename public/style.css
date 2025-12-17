@@ -124,25 +124,47 @@ button:disabled {
 }
 
 .advanced-options details {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
+    background: transparent;
+    border: none;
+    padding: 0;
 }
 
 .advanced-options summary {
     cursor: pointer;
     font-weight: 600;
-    color: #475569;
+    color: #94a3b8;
     user-select: none;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.advanced-options summary:hover {
+    color: white;
+}
+
+.advanced-options summary::before {
+    content: '›';
+    font-size: 1.2rem;
+    line-height: 1;
+    transition: transform 0.2s;
+}
+
+.advanced-options details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.advanced-options summary::-webkit-details-marker {
+    display: none;
 }
 
 .options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
     margin-top: 1rem;
-    padding: 0.5rem;
+    padding: 0;
 }
 
 .options-grid label {
@@ -150,8 +172,36 @@ button:disabled {
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
-    color: #334155;
+    color: #cbd5e1;
     cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.options-grid label:hover {
+    background-color: #334155;
+    border-color: #475569;
+}
+
+.options-grid input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 0;
+    height: 0;
+    position: absolute;
+    opacity: 0;
+}
+
+/* Selected state for chips */
+.options-grid label:has(input:checked) {
+    background-color: rgba(59, 130, 246, 0.2);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
 }
 
 .custom-args {
